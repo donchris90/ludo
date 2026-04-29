@@ -1,8 +1,7 @@
 // src/services/wallet/walletService.ts
-import { Wallet, Transaction, User } from '../../models';  // Fixed path
+import { Wallet, Transaction, User } from '../../models';
 import { paystackService } from '../payment/paystack';
-import { cryptoService } from '../crypto/cryptoService';
-import { sequelize } from '../../models';  // Fixed path
+import { sequelize } from '../../models';
 import { v4 as uuidv4 } from 'uuid';
 import { Op } from 'sequelize';
 
@@ -102,23 +101,24 @@ class WalletService {
     }
   }
 
-  // ─── CRYPTO DEPOSIT ADDRESS ──────────────────────────────
+  // ─── CRYPTO DEPOSIT ADDRESS (Mock - No real crypto) ──────────────────────────────
   async getCryptoDepositAddress(userId: string, currency: 'USDT' | 'USDC' | 'BTC') {
     const wallet = await this.getWallet(userId) as any;
     if (!wallet) throw new Error('Wallet not found');
 
     if (currency === 'BTC') {
       if (!wallet.btcAddress) {
-        const address = await cryptoService.generateBtcAddress(userId);
+        // Mock BTC address generation
+        const address = `bc1${userId.slice(0, 8)}${Math.random().toString(36).substring(2, 10)}`;
         await wallet.update({ btcAddress: address });
         return { address, currency: 'BTC', network: 'Bitcoin' };
       }
       return { address: wallet.btcAddress, currency: 'BTC', network: 'Bitcoin' };
     }
 
-    // USDT and USDC use ERC-20 (same ETH address)
+    // USDT and USDC use ERC-20 (same ETH address) - Mock generation
     if (!wallet.ethAddress) {
-      const address = await cryptoService.generateEthAddress(userId);
+      const address = `0x${userId.slice(0, 8)}${Math.random().toString(36).substring(2, 34)}`;
       await wallet.update({ ethAddress: address });
     }
     return {
@@ -131,19 +131,19 @@ class WalletService {
     };
   }
 
-  // ─── CRYPTO WITHDRAWAL ───────────────────────────────────
+  // ─── CRYPTO WITHDRAWAL (Mock - No real crypto) ───────────────────────────────────
   async withdrawCrypto(userId: string, currency: 'USDT' | 'USDC' | 'BTC', amount: number, toAddress: string) {
     const wallet = await this.getWallet(userId) as any;
     const balanceField = `${currency.toLowerCase()}Balance`;
     if (!wallet || Number(wallet[balanceField]) < amount) throw new Error('Insufficient balance');
 
     const reference = `${currency}_WDR_${uuidv4()}`;
-    const fee = await cryptoService.estimateFee(currency);
+    const fee = 0.001; // Mock fee
 
     const t = await sequelize.transaction();
     try {
       await wallet.decrement(balanceField as any, { by: amount, transaction: t });
-      const txHash = await cryptoService.sendCrypto(currency, toAddress, amount - fee);
+      const txHash = `0x${Math.random().toString(36).substring(2, 66)}`;
       await Transaction.create({
         userId, type: 'withdrawal', currency,
         amount, fee, status: 'confirmed', reference,
