@@ -2,6 +2,7 @@
 import { Router, Response } from 'express';
 import { User, Game, Transaction } from '../models';
 import { AuthRequest } from '../middleware/auth';
+import { User, Wallet } from '../models';  // Add Wallet to the import
 
 const router = Router();
 
