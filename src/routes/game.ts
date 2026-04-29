@@ -20,7 +20,7 @@ router.post('/stats', async (req: AuthRequest, res: Response) => {
       user.elo += eloChange;
 
       if (stakeAmount > 0) {
-        const wallet = await user.$get('wallet');
+        const wallet = await Wallet.findOne({ where: { userId: user.id } });
         if (wallet) {
           wallet.coinBalance = Number(wallet.coinBalance) + stakeAmount;
           await wallet.save();
