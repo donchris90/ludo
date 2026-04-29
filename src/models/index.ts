@@ -29,7 +29,25 @@ if (dbType === 'sqlite') {
 }
 
 // ─── USER ─────────────────────────────────────────────────────────────────────
-export class User extends Model {}
+export class User extends Model {
+  public id!: string;
+  public username!: string;
+  public email!: string;
+  public passwordHash!: string;
+  public phone!: string | null;
+  public avatarUrl!: string | null;
+  public elo!: number;
+  public totalWins!: number;
+  public totalGames!: number;
+  public isVerified!: boolean;
+  public isBanned!: boolean;
+  public referralCode!: string;
+  public referredBy!: string | null;
+  public country!: string;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
 User.init({
   id:           { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
   username:     { type: DataTypes.STRING(30), allowNull: false, unique: true },
@@ -48,7 +66,20 @@ User.init({
 }, { sequelize, modelName: 'User', tableName: 'users' });
 
 // ─── WALLET ───────────────────────────────────────────────────────────────────
-export class Wallet extends Model {}
+export class Wallet extends Model {
+  public id!: string;
+  public userId!: string;
+  public nairaBalance!: number;
+  public usdtBalance!: number;
+  public usdcBalance!: number;
+  public btcBalance!: number;
+  public coinBalance!: number;
+  public ethAddress!: string | null;
+  public btcAddress!: string | null;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
 Wallet.init({
   id:           { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
   userId:       { type: DataTypes.UUID, allowNull: false, references: { model: 'users', key: 'id' } },
@@ -62,7 +93,21 @@ Wallet.init({
 }, { sequelize, modelName: 'Wallet', tableName: 'wallets' });
 
 // ─── TRANSACTION ──────────────────────────────────────────────────────────────
-export class Transaction extends Model {}
+export class Transaction extends Model {
+  public id!: string;
+  public userId!: string;
+  public type!: string;
+  public currency!: string;
+  public amount!: number;
+  public fee!: number;
+  public status!: string;
+  public reference!: string;
+  public metadata!: any;
+  public gameId!: string | null;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
 Transaction.init({
   id:        { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
   userId:    { type: DataTypes.UUID, allowNull: false },
@@ -88,7 +133,25 @@ Transaction.init({
 }, { sequelize, modelName: 'Transaction', tableName: 'transactions' });
 
 // ─── GAME ─────────────────────────────────────────────────────────────────────
-export class Game extends Model {}
+export class Game extends Model {
+  public id!: string;
+  public mode!: string;
+  public status!: string;
+  public playerCount!: number;
+  public stakeAmount!: number;
+  public stakeCurrency!: string;
+  public potAmount!: number;
+  public platformFee!: number;
+  public winnerId!: string | null;
+  public slots!: any;
+  public gameState!: any;
+  public startedAt!: Date | null;
+  public endedAt!: Date | null;
+  public tournamentId!: string | null;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
 Game.init({
   id:            { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
   mode:          { type: DataTypes.ENUM('casual', 'real_money'), allowNull: false },
@@ -107,7 +170,17 @@ Game.init({
 }, { sequelize, modelName: 'Game', tableName: 'games' });
 
 // ─── DAILY CLAIM ──────────────────────────────────────────────────────────────
-export class DailyClaim extends Model {}
+export class DailyClaim extends Model {
+  public id!: string;
+  public userId!: string;
+  public date!: string;
+  public loginClaimed!: boolean;
+  public firstWinClaimed!: boolean;
+  public adsWatched!: number;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
 DailyClaim.init({
   id:              { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
   userId:          { type: DataTypes.UUID, allowNull: false },
@@ -121,7 +194,21 @@ DailyClaim.init({
 });
 
 // ─── TOURNAMENT ───────────────────────────────────────────────────────────────
-export class Tournament extends Model {}
+export class Tournament extends Model {
+  public id!: string;
+  public name!: string;
+  public entryFee!: number;
+  public currency!: string;
+  public prizePool!: number;
+  public maxPlayers!: number;
+  public status!: string;
+  public startTime!: Date;
+  public bracket!: any;
+  public prizeStructure!: any;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
 Tournament.init({
   id:             { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
   name:           { type: DataTypes.STRING, allowNull: false },

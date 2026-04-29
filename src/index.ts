@@ -17,9 +17,10 @@ import gameRoutes from './routes/game';
 import leaderboardRoutes from './routes/leaderboard';
 import tournamentRoutes from './routes/tournament';
 import webhookRoutes from './routes/webhook';
-import { coinRouter } from './routes/coinroutes';
+
 import monetizationRouter from './routes/monetization';
-import admobssvRouter from './routes/admobssv';
+import { coinRouter } from './routes/coinRoutes';
+import admobssvRouter from './routes/admobSSV';
 import { authMiddleware } from './middleware/auth';
 
 dotenv.config();
